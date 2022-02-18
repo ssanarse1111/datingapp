@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { User } from './_models/user';
+import { AccountService } from './_services/account.service';
 
 @Component({
   selector: 'app-root',
@@ -10,16 +12,19 @@ export class AppComponent implements OnInit {
   title = 'The Dating app';
   users: any;
 
-  constructor(private http: HttpClient) {}
+  // Injecting services from other files / services
+  constructor(private accountService: AccountService) {}
   ngOnInit() {
-    this.getUsers();
+    // from setCurrentUser() method
+    this.setCurrentUser();
   }
 
-  getUsers() {
-    this.http.get('https://localhost:5001/api/users').subscribe(response => {
-      this.users = response;
-    }, error => {
-      console.log(error);
-    })
+  //Set Current User - from account.service.ts (If we refresh or close the browser, we still remain login)
+  setCurrentUser() {
+    const user: User = JSON.parse(localStorage.getItem('user'));
+    // from constructor
+    this.accountService.setCurrentUser(user);
   }
+
+
 }
